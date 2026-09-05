@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 
-load_dotenv("C:/Users/zoheb/smart-coffee-ai/coffee_agent/.env")
+load_dotenv()
 
 from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
