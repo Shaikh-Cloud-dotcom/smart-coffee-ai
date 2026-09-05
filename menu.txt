@@ -1,0 +1,25 @@
+COFFEE SHOP MENU
+
+Coffee:
+- Caramel Macchiato — ₹180
+- Vanilla Latte — ₹160
+- White Chocolate Mocha — ₹190
+- Cappuccino — ₹140
+- Americano — ₹120
+
+Cold Coffee:
+- Iced Caramel Latte — ₹180
+- Iced Vanilla Latte — ₹170
+- Cold Coffee — ₹150
+
+Food:
+- Chocolate Croissant — ₹120
+- Blueberry Muffin — ₹100
+- Veg Sandwich — ₹140
+- Chocolate Cake — ₹160
+
+Preferences:
+- Sweet drinks: Caramel Macchiato, White Chocolate Mocha, Vanilla Latte
+- Less sweet: Cappuccino, Americano
+- Creamy drinks: Vanilla Latte, White Chocolate Mocha, Cold Coffee
+- Strong coffee: Americano, Cappuccino

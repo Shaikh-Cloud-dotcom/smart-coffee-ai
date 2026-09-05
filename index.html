@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Smart Coffee AI</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f5f1eb;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      width: 420px;
+      max-width: 95%;
+      background: white;
+      padding: 28px;
+      border-radius: 18px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      margin: 7px 0;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 13px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: bold;
+      background: #6f4e37;
+      color: white;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    #chatSection {
+      display: none;
+    }
+
+    #messages {
+      height: 300px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .message {
+      margin: 8px 0;
+      padding: 9px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+    }
+
+    .user {
+      background: #eee;
+      text-align: right;
+    }
+
+    .bot {
+      background: #f1e5d8;
+    }
+
+    #logoutBtn {
+      background: #555;
+    }
+
+    #status {
+      text-align: center;
+      margin-top: 10px;
+      color: #666;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>☕ Smart Coffee AI</h1>
+
+    <p class="subtitle">
+      Your personal coffee assistant
+    </p>
+
+
+    <!-- LOGIN SECTION -->
+
+    <div id="loginSection">
+
+      <input
+        type="email"
+        id="email"
+        placeholder="Email"
+      >
+
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+      >
+
+      <button onclick="register()">
+        Create Account
+      </button>
+
+      <button onclick="login()">
+        Login
+      </button>
+
+      <p id="status"></p>
+
+    </div>
+
+
+    <!-- CHAT SECTION -->
+
+    <div id="chatSection">
+
+      <div id="messages"></div>
+
+      <input
+        type="text"
+        id="messageInput"
+        placeholder="Ask about coffee or food..."
+      >
+
+      <button onclick="sendMessage()">
+        Send
+      </button>
+
+      <button id="logoutBtn" onclick="logout()">
+        Logout
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- FIREBASE -->
+
+  <script type="module">
+
+    import { initializeApp } from
+      "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged
+    } from
+      "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+
+    // Firebase configuration
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC-S3XsTd35fDtlu9ZqC1yTCoDv8nEFhiI",
+      authDomain: "smart-coffee-ai.firebaseapp.com",
+      projectId: "smart-coffee-ai",
+      storageBucket: "smart-coffee-ai.firebasestorage.app",
+      messagingSenderId: "426841563897",
+      appId: "1:426841563897:web:4a3e4b64587c56d2293828"
+    };
+
+
+    const app = initializeApp(firebaseConfig);
+
+    const auth = getAuth(app);
+
+
+    // REGISTER
+
+    window.register = async function () {
+
+      const email =
+        document.getElementById("email").value.trim();
+
+      const password =
+        document.getElementById("password").value;
+
+      if (!email || !password) {
+
+        document.getElementById("status").innerText =
+          "Please enter email and password.";
+
+        return;
+      }
+
+      try {
+
+        await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+        document.getElementById("status").innerText =
+          "Account created successfully!";
+
+      } catch (error) {
+
+        document.getElementById("status").innerText =
+          error.message;
+
+      }
+
+    };
+
+
+    // LOGIN
+
+    window.login = async function () {
+
+      const email =
+        document.getElementById("email").value.trim();
+
+      const password =
+        document.getElementById("password").value;
+
+      if (!email || !password) {
+
+        document.getElementById("status").innerText =
+          "Please enter email and password.";
+
+        return;
+      }
+
+      try {
+
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+      } catch (error) {
+
+        document.getElementById("status").innerText =
+          error.message;
+
+      }
+
+    };
+
+
+    // LOGOUT
+
+    window.logout = async function () {
+
+      await signOut(auth);
+
+    };
+
+
+    // AUTH STATE
+
+    onAuthStateChanged(auth, (user) => {
+
+      const loginSection =
+        document.getElementById("loginSection");
+
+      const chatSection =
+        document.getElementById("chatSection");
+
+      if (user) {
+
+        loginSection.style.display = "none";
+
+        chatSection.style.display = "block";
+
+        document.getElementById("status").innerText =
+          "Logged in";
+
+      } else {
+
+        loginSection.style.display = "block";
+
+        chatSection.style.display = "none";
+
+      }
+
+    });
+
+
+    // SEND MESSAGE TO BACKEND
+
+    window.sendMessage = async function () {
+
+      const input =
+        document.getElementById("messageInput");
+
+      const message =
+        input.value.trim();
+
+      if (!message) return;
+
+
+      // Get currently logged-in Firebase user
+
+      const user = auth.currentUser;
+
+
+      if (!user) {
+
+        addMessage(
+          "Please login first.",
+          "bot"
+        );
+
+        return;
+      }
+
+
+      // Show user message
+
+      addMessage(
+        message,
+        "user"
+      );
+
+      input.value = "";
+
+
+      // Thinking message
+
+      addMessage(
+        "Thinking... ☕",
+        "bot"
+      );
+
+
+      try {
+
+        // Get Firebase ID token
+
+        const idToken =
+          await user.getIdToken();
+
+
+        // Send request to FastAPI
+
+        const response =
+          await fetch(
+            "http://127.0.0.1:8002/chat",
+            {
+              method: "POST",
+
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization":
+                  "Bearer " + idToken
+              },
+
+              body: JSON.stringify({
+                message: message
+              })
+            }
+          );
+
+
+        const data =
+          await response.json();
+
+
+        // Remove Thinking message
+
+        const messages =
+          document.getElementById("messages");
+
+        if (messages.lastElementChild) {
+
+          messages.lastElementChild.remove();
+
+        }
+
+
+        // Backend error
+
+        if (!response.ok) {
+
+          throw new Error(
+            data.detail || "Backend error"
+          );
+
+        }
+
+
+        // Show AI response
+
+        addMessage(
+          data.reply,
+          "bot"
+        );
+
+
+      } catch (error) {
+
+        const messages =
+          document.getElementById("messages");
+
+
+        if (messages.lastElementChild) {
+
+          messages.lastElementChild.remove();
+
+        }
+
+
+        addMessage(
+          "Sorry, I couldn't connect to the AI server.",
+          "bot"
+        );
+
+
+        console.error(
+          "Chat error:",
+          error
+        );
+
+      }
+
+    };
+
+
+    // ADD MESSAGE TO CHAT
+
+    window.addMessage = function (
+      text,
+      type
+    ) {
+
+      const messages =
+        document.getElementById("messages");
+
+      const div =
+        document.createElement("div");
+
+      div.className =
+        "message " + type;
+
+      div.innerText =
+        text;
+
+      messages.appendChild(div);
+
+
+      // Auto scroll
+
+      messages.scrollTop =
+        messages.scrollHeight;
+
+    };
+
+
+    // ENTER KEY TO SEND
+
+    document
+      .getElementById("messageInput")
+      .addEventListener(
+        "keydown",
+        function (event) {
+
+          if (event.key === "Enter") {
+
+            sendMessage();
+
+          }
+
+        }
+      );
+
+  </script>
+
+</body>
+</html>
